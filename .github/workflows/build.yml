@@ -1,0 +1,99 @@
+name: NEWIFI3 CI
+on:
+  watch:
+    types: [started]
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          repository: hanwckf/rt-n56u
+      - name: Move Repository
+        run: |
+          mkdir /opt/rt-n56u
+          mv ./* /opt/rt-n56u
+      - name: Prepare Environment
+        run: |
+          sudo apt update
+          sudo apt install git unzip libtool-bin curl cmake gperf gawk flex bison nano xxd fakeroot kmod cpio git python3-docutils gettext automake autopoint texinfo build-essential help2man pkg-config zlib1g-dev libgmp3-dev libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev wget libc-dev-bin
+          cd /opt/rt-n56u/toolchain-mipsel
+          sh dl_toolchain.sh
+      - name: Update Config
+        run: |
+          CONFIG_PATH=/opt/rt-n56u/trunk/configs/templates/NEWIFI3.config
+          sed -i 's/CONFIG_FIRMWARE_ENABLE_UFSD=y/CONFIG_FIRMWARE_ENABLE_UFSD=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_ENABLE_FAT=y/CONFIG_FIRMWARE_ENABLE_FAT=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_ENABLE_EXFAT=y/CONFIG_FIRMWARE_ENABLE_EXFAT=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_UVC=y/CONFIG_FIRMWARE_INCLUDE_UVC=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_SERIAL=y/CONFIG_FIRMWARE_INCLUDE_SERIAL=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_AUDIO=y/CONFIG_FIRMWARE_INCLUDE_AUDIO=n/g' $CONFIG_PATH
+          sed -i '/#CONFIG_FIRMWARE_INCLUDE_LANG_BR=y/d' $CONFIG_PATH
+          sed -i '/#CONFIG_FIRMWARE_INCLUDE_LANG_CZ/d' $CONFIG_PATH
+          sed -i '/#CONFIG_FIRMWARE_INCLUDE_LANG_DA=y/d' $CONFIG_PATH
+          sed -i '/#CONFIG_FIRMWARE_INCLUDE_LANG_DE=y/d' $CONFIG_PATH
+          sed -i '/#CONFIG_FIRMWARE_INCLUDE_LANG_ES=y/d' $CONFIG_PATH
+          sed -i '/#CONFIG_FIRMWARE_INCLUDE_LANG_FI=y/d' $CONFIG_PATH
+          sed -i '/#CONFIG_FIRMWARE_INCLUDE_LANG_FR=y/d' $CONFIG_PATH
+          sed -i '/#CONFIG_FIRMWARE_INCLUDE_LANG_NO=y/d' $CONFIG_PATH
+          sed -i '/#CONFIG_FIRMWARE_INCLUDE_LANG_PL=y/d' $CONFIG_PATH
+          sed -i '/#CONFIG_FIRMWARE_INCLUDE_LANG_RU=y/d' $CONFIG_PATH
+          sed -i '/#CONFIG_FIRMWARE_INCLUDE_LANG_SV=y/d' $CONFIG_PATH
+          sed -i '/#CONFIG_FIRMWARE_INCLUDE_LANG_UK=y/d' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_LPRD=y/CONFIG_FIRMWARE_INCLUDE_LPRD=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_U2EC=y/CONFIG_FIRMWARE_INCLUDE_U2EC=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_TCPDUMP=y/CONFIG_FIRMWARE_INCLUDE_TCPDUMP=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_HDPARM=y/CONFIG_FIRMWARE_INCLUDE_HDPARM=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_PARTED=y/CONFIG_FIRMWARE_INCLUDE_PARTED=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_SMBD=y/CONFIG_FIRMWARE_INCLUDE_SMBD=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_SMBD36=y/CONFIG_FIRMWARE_INCLUDE_SMBD36=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_FTPD=y/CONFIG_FIRMWARE_INCLUDE_FTPD=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_EAP_PEAP=y/CONFIG_FIRMWARE_INCLUDE_EAP_PEAP=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_HTTPS=n/CONFIG_FIRMWARE_INCLUDE_HTTPS=y/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_OPENSSL_EXE=n/CONFIG_FIRMWARE_INCLUDE_OPENSSL_EXE=y/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_XUPNPD=y/CONFIG_FIRMWARE_INCLUDE_XUPNPD=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_FFMPEG_NEW=y/CONFIG_FIRMWARE_INCLUDE_FFMPEG_NEW=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_TRANSMISSION=y/CONFIG_FIRMWARE_INCLUDE_TRANSMISSION=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_TRANSMISSION_WEB_CONTROL=y/CONFIG_FIRMWARE_INCLUDE_TRANSMISSION_WEB_CONTROL=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_ARIA=y/CONFIG_FIRMWARE_INCLUDE_ARIA=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_ARIA_WEB_CONTROL=y/CONFIG_FIRMWARE_INCLUDE_ARIA_WEB_CONTROL=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_SCUTCLIENT=y/CONFIG_FIRMWARE_INCLUDE_SCUTCLIENT=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_DOGCOM=y/CONFIG_FIRMWARE_INCLUDE_DOGCOM=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_MINIEAP=y/CONFIG_FIRMWARE_INCLUDE_MINIEAP=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_NJIT_CLIENT=y/CONFIG_FIRMWARE_INCLUDE_NJIT_CLIENT=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_NAPT66=y/CONFIG_FIRMWARE_INCLUDE_NAPT66=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS=y/CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_SSSERVER=y/CONFIG_FIRMWARE_INCLUDE_SSSERVER=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_SERVER=y/CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_SERVER=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_CLIENT=y/CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_CLIENT=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_CMD=y/CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_CMD=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_DNSFORWARDER=y/CONFIG_FIRMWARE_INCLUDE_DNSFORWARDER=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_VLMCSD=y/CONFIG_FIRMWARE_INCLUDE_VLMCSD=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_TTYD=y/CONFIG_FIRMWARE_INCLUDE_TTYD=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_LRZSZ=y/CONFIG_FIRMWARE_INCLUDE_LRZSZ=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_HTOP=y/CONFIG_FIRMWARE_INCLUDE_HTOP=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_NANO=y/CONFIG_FIRMWARE_INCLUDE_NANO=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_IPERF3=y/CONFIG_FIRMWARE_INCLUDE_IPERF3=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_DUMP1090=y/CONFIG_FIRMWARE_INCLUDE_DUMP1090=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_RTL_SDR=y/CONFIG_FIRMWARE_INCLUDE_RTL_SDR=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_MTR=y/CONFIG_FIRMWARE_INCLUDE_MTR=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_SOCAT=y/CONFIG_FIRMWARE_INCLUDE_SOCAT=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_SRELAY=y/CONFIG_FIRMWARE_INCLUDE_SRELAY=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_MENTOHUST=y/CONFIG_FIRMWARE_INCLUDE_MENTOHUST=n/g' $CONFIG_PATH
+          sed -i 's/CONFIG_FIRMWARE_INCLUDE_WIREGUARD=y/CONFIG_FIRMWARE_INCLUDE_WIREGUARD=n/g' $CONFIG_PATH
+          sed -i 's/192.168.2.1/192.168.123.1/g' /opt/rt-n56u/trunk/user/shared/defaults.h
+          sed -i 's/192.168.2.244/192.168.123.199/g' /opt/rt-n56u/trunk/user/shared/defaults.h
+          sed -i 's/1234567890/12345678/g' /opt/rt-n56u/trunk/user/shared/defaults.h
+          sed -i 's/2001:470:0:50::2/ntp2.aliyun.com/g' /opt/rt-n56u/trunk/user/shared/defaults.h
+          sed -i "s/FIRMWARE_BUILDS_REV=.*/FIRMWARE_BUILDS_REV=$(bash -c 'git rev-parse --short=7 HEAD 2>/dev/null')/g" /opt/rt-n56u/trunk/versions.inc
+      - name: Build Firmware
+        run: |
+          cd /opt/rt-n56u/trunk
+          fakeroot ./build_firmware_modify NEWIFI3
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Firmware
+          path: /opt/rt-n56u/trunk/images/*.trx
