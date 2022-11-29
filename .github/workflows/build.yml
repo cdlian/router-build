@@ -86,6 +86,7 @@ jobs:
           sed -i 's/1234567890/12345678/g' /opt/rt-n56u/trunk/user/shared/defaults.h
           sed -i 's/2001:470:0:50::2/ntp2.aliyun.com/g' /opt/rt-n56u/trunk/user/shared/defaults.h
           sed -i "s/FIRMWARE_BUILDS_REV=.*/FIRMWARE_BUILDS_REV=$(bash -c 'git rev-parse --short=7 HEAD 2>/dev/null')/g" /opt/rt-n56u/trunk/versions.inc
+          sed -i '/sprintf(tmp, "\/proc\/sys\/net\/%s\/%s", "ipv4", "tcp_tw_recycle");/,+2d' /opt/rt-n56u/trunk/user/rc/net.c
       - name: Build Firmware
         run: |
           cd /opt/rt-n56u/trunk
