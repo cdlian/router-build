@@ -92,7 +92,7 @@ jobs:
           cd /opt/rt-n56u/trunk
           fakeroot ./build_firmware_modify NEWIFI3
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact
         with:
           name: Firmware
           path: /opt/rt-n56u/trunk/images/*.trx
